@@ -1,6 +1,12 @@
-# Semantic Preservation of a Compiler from arithmetic expressions to accumulator machine.
+# Semantic Preservation of a Compiler from Arithmetic Expressions to Accumulator Machine.
+
+This is a proof of semantic preservation of a compiler of arithmetic expressions to a register machine as the one in  
+"Correctness of a compiler for arithmetic expressions" (McCarthy and Painter 1967). The formalization is in Agda.   
+The proof is not as in the paper but just using pattern matching, induction and equational reasoning.
 
 ## I. Artihmetic expressions (source language).
+The source language is just natural number arithemtic expressions with additon.
+
 ### AST
 ```Agda
 Var = ℕ
@@ -11,6 +17,7 @@ data Expr : Set where
   plus  : Expr → Expr → Expr
 ```
 
+The semantics are straightforward.
 ### Semantics
 ```Agda
 State = Var → ℕ
@@ -41,6 +48,8 @@ data Ins : Set where
   -- ADD r adds to the accumulator the contents of register r.
 ```
 
+
+The memory cells are just a special purpouse register $acc$ (the accumulator) and infinite countable registers $reg \ 0, reg \ 1, reg \ 2,...$
 ```Agda
 data Cell : Set where
   acc : Cell
@@ -49,6 +58,7 @@ data Cell : Set where
 
 
 ### Semantics
+The memory model is just a map from memory cells to natural numbers.
 ```agda
 Store = Cell → ℕ
 
@@ -56,24 +66,36 @@ update : Store → Cell → ℕ → Store
 update s c v c' with c ≟Cell c'
 ... | yes _ = v
 ... | no _  = s c'
+```
+We use $update \ s \ c \ v$ to update the contents of cell $c$ with value $v$. We use $≟Cell$ to decide if two cells are  
+equal, they are equall if they have the same register number.
 
+
+The semantics of each instruction is just an update of the store.
+```agda
 sem-ins : Store → Ins → Store
 sem-ins s (LI n) = update s acc n
 sem-ins s (LOAD r) = update s acc (s (reg r))
 sem-ins s (STO r) = update s (reg r) (s acc)
 sem-ins s (ADD r) = update s acc (s acc + s (reg r))
+```
 
-
+A list of instructions is a program, and it's semantics are just succesive modifications of the store for each instruction.
+```agda
 sem-code : Store → List Ins → Store
 sem-code s [] = s
 sem-code s (i ∷ li) = sem-code (sem-ins s i) li
 ```
 
 ## III. Compiler.
-
+The variables of the target language needs to be assigned to the registers of the register machinge, we use the following symbol
+table as just maps from variables to registers and there is no problem since both are infinite many.
 ```agda
 Symt = Var → Reg
+```
 
+Given a symbol table $w$, we compile an expression $e$ using the registers greater or equall $r$
+```agda
 compile : Symt → Reg → Expr → List Ins
 compile m r (const n) = [ LI n ]
 compile m r (var x) = [ LOAD (m x) ]
@@ -110,3 +132,9 @@ correctness-acc : ∀ e m s s' r →
 
   (sem-code s' (compile m r e) acc ≡ source-sem s e)
 ```
+
+# 5. References.
+* Correctness of a compiler for arithmetic expressions. [McCarthy and Painter 1967](http://jmc.stanford.edu/articles/mcpain/mcpain.pdf).
+* Correctness of a compiler for arithmetic expressions in Lean. [Xi Wang](https://kqueue.org/blog/2020/10/15/arithcc/).
+* Formalization in Coq. [Jean-Christophe Filliâtre](https://github.com/coq-contribs/mini-compiler).
+
