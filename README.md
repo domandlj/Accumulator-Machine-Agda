@@ -1,7 +1,7 @@
 # Semantic Preservation of a Compiler from Arithmetic Expressions to Accumulator Machine.
 
-This is a proof of semantic preservation of a compiler of arithmetic expressions to a register machine as the one in  
-"Correctness of a compiler for arithmetic expressions" (McCarthy and Painter 1967). The formalization is in Agda.   
+This is a proof of semantic preservation of a compiler of arithmetic expressions to a register machine as the one  
+in  "Correctness of a compiler for arithmetic expressions" (McCarthy and Painter 1967). The formalization is in Agda.   
 The proof is not as in the paper but just using pattern matching, induction and equational reasoning.
 
 ## I. Artihmetic expressions (source language).
