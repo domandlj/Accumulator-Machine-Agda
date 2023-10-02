@@ -26,16 +26,27 @@ source-sem s (plus e e') = source-sem s e + source-sem s e'
 ### AST
 ```Agda
 Reg = ℕ
+
 data Ins : Set where
   LI   : ℕ   → Ins
-  LOAD : Reg → Ins
-  STO  : Reg → Ins
-  ADD  : Reg → Ins
+  -- LI n loads a constant n to the accumulator.
 
+  LOAD : Reg → Ins
+  -- LOAD r loads register r content into the accumulator.
+
+  STO  : Reg → Ins
+  -- STORE r stores accumulator contents into the register r. 
+
+  ADD  : Reg → Ins
+  -- ADD r adds to the accumulator the contents of register r.
+```
+
+```Agda
 data Cell : Set where
   acc : Cell
   reg : Reg → Cell
 ```
+
 
 ### Semantics
 ```agda
