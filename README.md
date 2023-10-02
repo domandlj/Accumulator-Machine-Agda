@@ -103,6 +103,16 @@ compile m r (plus e e') = compile m r e ++ [ STO r ] ++ compile m (suc r) e' ++ 
 ```
 
 ## IV. Semantic Preservation.
+We have as premises that for all state $s$, store $s'$, variables $x$, registers $r$ and symbol table $m$ 
+* $m x < r$
+* $s \ x ≡ s' \ (reg (m \ x))$, i.e., the state has the same contents as the store.
+
+And we that can conclude that 
+* The contents of the accumulator in the store are the same as the ones of the semantic of the  
+compiled expression with the state.  
+* All registers less than $r$ remain unchanged on the store after compiling.
+
+Formally,
 ```agda
 correctness : ∀ e m s s' r →
   (∀ x → m x < r) →
@@ -124,6 +134,9 @@ This is just proved using the following property multiple times.
 sem-append : ∀ (l₁ l₂ : List Ins) (s : Store) →
   sem-code s (l₁ ++ l₂) ≡ sem-code (sem-code s l₁) l₂
 ```
+
+We use the first the properties of the registers to prove that the contents of the accumulator in the store are the same as the ones  
+of the semantic of the compiled expression with the state.
 
 ```agda
 correctness-acc : ∀ e m s s' r →
