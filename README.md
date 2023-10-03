@@ -146,7 +146,7 @@ correctness-acc : ∀ e m s s' r →
   (sem-code s' (compile m r e) acc ≡ source-sem s e)
 ```
 
-# 5. References.
+# V. References.
 * Correctness of a compiler for arithmetic expressions. [McCarthy and Painter 1967](http://jmc.stanford.edu/articles/mcpain/mcpain.pdf).
 * Correctness of a compiler for arithmetic expressions in Lean. [Xi Wang](https://kqueue.org/blog/2020/10/15/arithcc/).
 * Formalization in Coq. [Jean-Christophe Filliâtre](https://github.com/coq-contribs/mini-compiler).
